@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABIN Player</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            color: #eee;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #player-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #gl-canvas {
+            display: none; /* Initially hidden */
+            /* ★修正点1: CSSで拡大表示するための設定を追加 */
+            width: 500px;  /* Canvasの基本サイズを固定 */
+            height: 281px;
+            image-rendering: pixelated; /* ぼやけずに拡大 */
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            transform-origin: 0 0;
+            transition: transform 0.05s linear; 
+            background-color: #000;
+        }
+        #upload-prompt {
+            border: 2px dashed #555;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        #progress-bar-container {
+            width: 80%;
+            background-color: #333;
+            border: 1px solid #555;
+            margin: 20px auto 0;
+            display: none; /* Initially hidden */
+        }
+        #progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #4CAF50;
+            transition: width 0.1s linear;
+        }
+        #progress-text {
+            color: #fff;
+            margin-top: 8px;
+            display: block;
+            font-size: 14px;
+        }
+        #debug-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.75);
+            padding: 15px;
+            border: 1px solid #444;
+            font-size: 12px;
+            display: none; /* Initially hidden */
+            pointer-events: none; /* Allow mouse events to pass through */
+            z-index: 10;
+        }
+        #debug-panel pre { margin: 0; }
+        #palette-container {
+            display: flex;
+            flex-wrap: wrap;
+            width: 256px;
+            height: 32px;
+            margin-top: 5px;
+            border: 1px solid #555;
+        }
+        .palette-color {
+            width: 16px;
+            height: 16px;
+        }
+        #mouseover-info {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 8px;
+            border: 1px solid #555;
+            font-size: 12px;
+            display: none;
+            pointer-events: none;
+            white-space: pre;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div id="player-container">
+        <canvas id="gl-canvas"></canvas>
+        <div id="upload-prompt">
+            <h2>Click or Drop 'encoded_ascii_movie.zip'</h2>
+            <!-- ★修正点2: ズーム操作の説明を追加 -->
+            <p style="color: #888; margin-top: 20px;">
+                Loaded: Use Mouse Wheel to Zoom
+            </p>
+            <input type="file" id="file-input" accept=".zip" style="display: none;">
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+            <span id="progress-text"></span>
+        </div>
+    </div>
+
+    <!-- Debug Panel Overlay -->
+    <div id="debug-panel">
+        <pre id="playback-info"></pre>
+        <pre id="binary-info"></pre>
+        <pre id="rendering-info"></pre>
+        <div id="palette-container"></div>
+    </div>
+    
+    <!-- Mouseover Info Box -->
+    <div id="mouseover-info"></div>
+
+    <script src="jszip.min.js"></script>
+    <script src="player.js"></script>
+</body>
+</html>
