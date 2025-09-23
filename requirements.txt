@@ -1,0 +1,6 @@
+# requirements.txt
+
+opencv-python
+numpy
+Pillow
+tqdm
